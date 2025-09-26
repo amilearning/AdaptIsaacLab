@@ -9,7 +9,7 @@
 
 import argparse
 import sys
-
+sys.path.insert(0, "/home/erlgpulaptop1/rsl_rl") 
 from isaaclab.app import AppLauncher
 
 # local imports
@@ -49,7 +49,7 @@ import os
 import torch
 from datetime import datetime
 
-from rsl_rl.runners import OnPolicyRunner
+from AdaptIsaacLab.agents.custom_runner import CustomOnPolicyRunner
 
 from isaaclab.envs import (
     DirectMARLEnv,
@@ -65,7 +65,7 @@ from isaaclab_tasks.utils import get_checkpoint_path
 from isaaclab_tasks.utils.hydra import hydra_task_config
 
 # Import extensions to set up environment tasks
-import ext_template.tasks  # noqa: F401
+import AdaptIsaacLab.tasks  # noqa: F401
 
 torch.backends.cuda.matmul.allow_tf32 = True
 torch.backends.cudnn.allow_tf32 = True
@@ -120,7 +120,7 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
     env = RslRlVecEnvWrapper(env)
 
     # create runner from rsl-rl
-    runner = OnPolicyRunner(env, agent_cfg.to_dict(), log_dir=log_dir, device=agent_cfg.device)
+    runner = CustomOnPolicyRunner(env, agent_cfg.to_dict(), log_dir=log_dir, device=agent_cfg.device)
     # write git state to logs
     runner.add_git_repo_to_log(__file__)
     # save resume path before creating a new log_dir

@@ -1,4 +1,4 @@
-"""Installation script for the 'ext_template' python package."""
+"""Installation script for the 'AdaptIsaacLab' python package."""
 
 import os
 import toml
@@ -18,8 +18,8 @@ INSTALL_REQUIRES = [
 
 # Installation operation
 setup(
-    name="ext_template",
-    packages=["ext_template"],
+    name="AdaptIsaacLab",
+    packages=["AdaptIsaacLab"],
     author=EXTENSION_TOML_DATA["package"]["author"],
     maintainer=EXTENSION_TOML_DATA["package"]["maintainer"],
     url=EXTENSION_TOML_DATA["package"]["repository"],
@@ -33,7 +33,7 @@ setup(
     classifiers=[
         "Natural Language :: English",
         "Programming Language :: Python :: 3.10",
-        "Isaac Sim :: 4.5.0",
+        "Isaac Sim :: 5.0.0",
     ],
     zip_safe=False,
 )
