@@ -19,6 +19,7 @@ from rsl_rl.modules import ActorCritic, ActorCriticRecurrent, resolve_rnd_config
 from rsl_rl.utils import resolve_obs_groups, store_code_state
 from AdaptIsaacLab.agents.treadmil_manager import TreadmillManager
 
+
 class CustomOnPolicyRunner:
     """On-policy runner for training and evaluation of actor-critic methods."""
 
@@ -29,8 +30,8 @@ class CustomOnPolicyRunner:
         self.device = device
         self.env = env
         self.is_treadmil_env = False
-        if 'treadmill_left' in env.env.env.scene.keys() or 'treadmill' in env.env.env.scene.keys():
-            self.is_treadmil_env = True
+    
+        # self.is_treadmil_env = True
         if self.is_treadmil_env:
             self.treadmill_manager = TreadmillManager(env)  
 

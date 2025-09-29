@@ -9,7 +9,7 @@
 
 import argparse
 import sys
-sys.path.insert(0, "/home/erlgpulaptop1/rsl_rl") 
+# sys.path.insert(0, "/home/erlgpulaptop1/rsl_rl") 
 from isaaclab.app import AppLauncher
 
 # local imports
@@ -64,6 +64,7 @@ from isaaclab_rl.rsl_rl import RslRlOnPolicyRunnerCfg, RslRlVecEnvWrapper
 from isaaclab_tasks.utils import get_checkpoint_path
 from isaaclab_tasks.utils.hydra import hydra_task_config
 
+
 # Import extensions to set up environment tasks
 import AdaptIsaacLab.tasks  # noqa: F401
 
@@ -97,6 +98,20 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
     if agent_cfg.run_name:
         log_dir += f"_{agent_cfg.run_name}"
     log_dir = os.path.join(log_root_path, log_dir)
+    env_cfg.log_dir = log_dir
+    ### Initialize Weights and Biases (wandb) logging if required
+    import wandb
+
+    wandb.init(
+        project=agent_cfg.wandb_project,
+        name=args_cli.task,
+        sync_tensorboard=True,
+        monitor_gym=False,
+        save_code=True,
+    )
+    wandb.config.update({"env_cfg": env_cfg.to_dict()})
+    wandb.config.update({"agent_cfg": agent_cfg})
+
 
     # create isaac environment
     env = gym.make(args_cli.task, cfg=env_cfg, render_mode="rgb_array" if args_cli.video else None)
@@ -117,7 +132,7 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
         env = multi_agent_to_single_agent(env)
 
     # wrap around environment for rsl-rl
-    env = RslRlVecEnvWrapper(env)
+    env = RslRlVecEnvWrapper(env,clip_actions=agent_cfg.clip_actions)
 
     # create runner from rsl-rl
     runner = CustomOnPolicyRunner(env, agent_cfg.to_dict(), log_dir=log_dir, device=agent_cfg.device)
@@ -136,6 +151,8 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
     dump_yaml(os.path.join(log_dir, "params", "agent.yaml"), agent_cfg)
     dump_pickle(os.path.join(log_dir, "params", "env.pkl"), env_cfg)
     dump_pickle(os.path.join(log_dir, "params", "agent.pkl"), agent_cfg)
+
+
 
     # run training
     runner.learn(num_learning_iterations=agent_cfg.max_iterations, init_at_random_ep_len=True)
