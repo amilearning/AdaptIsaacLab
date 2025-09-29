@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 from isaaclab.assets import Articulation
 from isaaclab.managers import SceneEntityCfg
 from isaaclab.terrains import TerrainImporter
-
+from isaaclab.sensors import ContactSensor
 if TYPE_CHECKING:
     from isaaclab.envs import ManagerBasedRLEnv
 
@@ -33,3 +33,14 @@ def track_out_limit(env: ManagerBasedRLEnv,
     overflow = torch.abs(robot_y_pose - treadmill_y_pose) - (track_half_w+deadband_meter)  # [N
     out_of_limits = torch.any(overflow.unsqueeze(0) > 0.0,dim=0)    
     return out_of_limits
+
+
+def illegal_contact(env: ManagerBasedRLEnv, threshold: float, sensor_cfg: SceneEntityCfg) -> torch.Tensor:
+    """Terminate when the contact force on the sensor exceeds the force threshold."""
+    # extract the used quantities (to enable type-hinting)
+    contact_sensor: ContactSensor = env.scene.sensors[sensor_cfg.name]
+    net_contact_forces = contact_sensor.data.net_forces_w_history
+    # check if any contact force exceeds the threshold
+    return torch.any(
+        torch.max(torch.norm(net_contact_forces[:, :, sensor_cfg.body_ids], dim=-1), dim=1)[0] > threshold, dim=1
+    )

@@ -28,7 +28,11 @@ class CustomOnPolicyRunner:
         self.policy_cfg = train_cfg["policy"]
         self.device = device
         self.env = env
-        self.treadmill_manager = TreadmillManager(env)  
+        self.is_treadmil_env = False
+        if 'treadmill_left' in env.env.env.scene.keys() or 'treadmill' in env.env.env.scene.keys():
+            self.is_treadmil_env = True
+        if self.is_treadmil_env:
+            self.treadmill_manager = TreadmillManager(env)  
 
         # check if multi-gpu is enabled
         self._configure_multi_gpu()
@@ -95,7 +99,8 @@ class CustomOnPolicyRunner:
         # Start training
         start_iter = self.current_learning_iteration
         tot_iter = start_iter + num_learning_iterations
-        self.treadmill_manager.reset()  # initialize treadmill speeds
+        if self.is_treadmil_env:
+            self.treadmill_manager.reset()  # initialize treadmill speeds
         for it in range(start_iter, tot_iter):
             start = time.time()
             # Rollout
@@ -104,7 +109,9 @@ class CustomOnPolicyRunner:
                     # Sample actions
                     actions = self.alg.act(obs)
                     # Step the environment
-                    self.treadmill_manager.single_treadmill()  # set treadmill velocities
+                    if self.is_treadmil_env:
+                        self.treadmill_manager.single_treadmill()  # set treadmill velocities
+                    
                     obs, rewards, dones, extras = self.env.step(actions.to(self.env.device))
                     # Move to device
                     obs, rewards, dones = (obs.to(self.device), rewards.to(self.device), dones.to(self.device))
