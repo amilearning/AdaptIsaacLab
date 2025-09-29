@@ -15,7 +15,7 @@ class UnitreeArticulationCfg(ArticulationCfg):
 
 UNITREE_GO2W_CFG = UnitreeArticulationCfg(
     spawn=sim_utils.UsdFileCfg(
-        usd_path="/home/erlgpulaptop1/robots_model/unitree_model/Go2W/usd/go2w.usd",
+        usd_path="/home/frl/robots_model/unitree_model/Go2W/usd/go2w.usd",
         activate_contact_sensors=True,
         rigid_props=sim_utils.RigidBodyPropertiesCfg(
             disable_gravity=False,
