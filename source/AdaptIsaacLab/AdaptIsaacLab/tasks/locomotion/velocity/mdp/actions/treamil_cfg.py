@@ -5,11 +5,6 @@ import torch
 from isaaclab.utils import configclass
 
 
-def constant_commands(env: ManagerBasedRLEnvCfg) -> torch.Tensor:
-    """The generated command from the command generator."""
-    return torch.tensor([[1, 0, 0]], device=env.device).repeat(env.num_envs, 1)
-
-
 
 class TreadmillActionTerm(ActionTerm):
 

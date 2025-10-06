@@ -9,7 +9,7 @@
 
 import argparse
 import sys
-# sys.path.insert(0, "/home/erlgpulaptop1/rsl_rl") 
+sys.path.insert(0, "/home/erlgpulaptop1/rsl_rl") 
 from isaaclab.app import AppLauncher
 
 # local imports

@@ -28,7 +28,7 @@ UNITREE_GO2_CFG = ArticulationCfg(
         pos=(0.0, 0.0, 0.4),
         joint_pos={
             ".*L_hip_joint": 0.1,
-            ".*R_hip_joint": -0.1,
+            ".*R_hip_joint": -0.1,  
             "F[L,R]_thigh_joint": 0.8,
             "R[L,R]_thigh_joint": 1.0,
             ".*_calf_joint": -1.5,
@@ -38,7 +38,7 @@ UNITREE_GO2_CFG = ArticulationCfg(
     soft_joint_pos_limit_factor=0.9,
     actuators={
         "base_legs": DCMotorCfg(
-            joint_names_expr=[".*_hip_joint", ".*_thigh_joint", ".*_calf_joint"],
+            joint_names_expr=[".*_hip_joint", ".*_thigh_joint", ".*_calf_joint"],   
             effort_limit=23.5,
             saturation_effort=23.5,
             velocity_limit=30.0,
@@ -56,7 +56,7 @@ class Go2EnvCfg(FlatEnvCfg):
         # post init of parent
         super().__post_init__()
         # self.scene.robot = ANYMAL_D_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
-        self.scene.robot = UNITREE_GO2_CFG.replace(prim_path="{ENV_REGEX_NS}/go2w")
+        self.scene.robot = UNITREE_GO2_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
 
 @configclass
 class Go2EnvCfg_PLAY(Go2EnvCfg):
